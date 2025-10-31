@@ -19,11 +19,7 @@
     --accent: #9acd32;
   }
 
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
     font-family: "Inter", sans-serif;
@@ -49,10 +45,7 @@
     margin-bottom: 5px;
   }
 
-  header p {
-    font-size: 0.9em;
-    color: var(--muted);
-  }
+  header p { font-size: 0.9em; color: var(--muted); }
 
   /* ----------- PDF Section ----------- */
   #pdfContainer {
@@ -107,15 +100,10 @@
     border-top: 1px solid var(--border);
   }
 
-  /* ----------- Smooth Scroll & Minimal Animations ----------- */
-  html {
-    scroll-behavior: smooth;
-  }
+  html { scroll-behavior: smooth; }
 
   @media (max-width: 600px) {
-    header h1 {
-      font-size: 1.3em;
-    }
+    header h1 { font-size: 1.3em; }
   }
 </style>
 </head>
@@ -133,47 +121,23 @@
   <footer>️ Humayun Shariar Himu</footer>
 
   <script>
-    const username = "HumayunShariarHimu";
-    const repo = "DopamineDetox";
-    const branch = "main";
+    const pdfUrl = "https://raw.githubusercontent.com/HumayunShariarHimu/AI-Tools-PDF/main/AiTooL.pdf";
     const pageBatch = 5;
 
-    async function loadRepoFiles() {
+    async function renderPdf(url) {
       const container = document.getElementById("pdfContainer");
-      try {
-        const res = await fetch(`https://api.github.com/repos/${username}/${repo}/contents/`);
-        if (!res.ok) throw new Error("GitHub API Error");
-        const data = await res.json();
-        const pdfFiles = data.filter(f => f.name.toLowerCase().endsWith(".pdf"));
+      container.innerHTML = "";
 
-        if (!pdfFiles.length) {
-          container.innerHTML = `<div class="loading">No PDF files found.</div>`;
-          return;
-        }
-
-        container.innerHTML = "";
-        for (const [i, file] of pdfFiles.entries()) {
-          const pdfUrl = `https://raw.githubusercontent.com/${username}/${repo}/${branch}/${file.name}`;
-          await renderPdfCard(pdfUrl, file.name, i, container);
-        }
-      } catch (err) {
-        container.innerHTML = `<div class="loading">Error loading repository: ${err.message}</div>`;
-        console.error(err);
-      }
-    }
-
-    async function renderPdfCard(url, name, index, container) {
       const card = document.createElement("div");
       card.className = "pdfCard";
-      card.innerHTML = `<div class="pdfTitle">${name.replace(".pdf","")}</div>
-                        <div class="loading" id="load${index}">Loading PDF...</div>`;
+      card.innerHTML = `<div class="pdfTitle">AI Tools PDF</div>
+                        <div class="loading" id="loading">Loading PDF...</div>`;
       container.appendChild(card);
 
       try {
         const pdf = await pdfjsLib.getDocument(url).promise;
         const totalPages = pdf.numPages;
-        const loading = document.getElementById(`load${index}`);
-
+        const loading = document.getElementById("loading");
         let loadedPages = 0;
 
         async function loadNextBatch() {
@@ -209,12 +173,12 @@
         window.addEventListener('scroll', onScroll);
 
       } catch (err) {
-        document.getElementById(`load${index}`).textContent = "Error Loading PDF.";
+        document.getElementById("loading").textContent = "Error Loading PDF.";
         console.error(err);
       }
     }
 
-    loadRepoFiles();
+    renderPdf(pdfUrl);
   </script>
 </body>
 </html>
